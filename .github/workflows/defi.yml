@@ -10,7 +10,6 @@ permissions:
   contents: read
 
 defaults:
-
   run:
     working-directory: defi
 
@@ -20,7 +19,7 @@ jobs:
     outputs:
       defi: ${{ steps.filter.outputs.defi }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - uses: dorny/paths-filter@4512585405083f25c027a35db413c2b3b9006d50
         id: filter
         with:
@@ -55,18 +54,16 @@ jobs:
 
       - run: echo "TODAY=$(date +%Y%m%d)" >> $GITHUB_ENV
       - name: Get jest cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: /tmp/jest-cache
           key: ${{ runner.os }}-jest-${{ env.TODAY }}
-
 
       - name: Run tests
         run: pnpm t data  # && npx esbuild src/protocols/import.test.ts --bundle --log-limit=0 --platform=node | node
         env:
           ETHEREUM_RPC: FAKE_ETHEREUM_RPC
           GRAPH_API_KEY: FAKE_GRAPH_API_KEY
-
 
       - name: Deploy infrastructure stack
         run: pnpm run deploy:prod
